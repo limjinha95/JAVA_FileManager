@@ -7,7 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.io.*;
+import java.net.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -27,6 +28,9 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class FileManage extends JFrame {
+	
+	Socket s;
+	DataOutputStream dou;
 	
 	private JFrame rmdir_dialog = new JFrame();
 	JButton rmdirbtn;
@@ -134,7 +138,24 @@ public class FileManage extends JFrame {
 		btnUpload.setBounds(391, 8, 68, 29);
 		titlepanel.add(btnUpload);
 		
-		
+		// 클라이언트 파일 업로드 부분 
+		btnUpload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String cmd = e.getActionCommand();
+				
+				try {
+					if(cmd.equals("upload")) {
+						System.out.println("connecting...");
+						//s = new Socket("127.0.0.1", 7777);
+						System.out.println("file uploading...");
+						dou = new DataOutputStream(s.getOutputStream());
+					}
+				} catch(Exception e1) {}
+		       
+			}
+		});
+		//btnUpload.setEnabled(false);
 		
 		
 
@@ -223,6 +244,8 @@ public class FileManage extends JFrame {
 	public static void main(String[] args) {
 		FileManage MP = new FileManage();
 	}
+
+	
 }
 
 
