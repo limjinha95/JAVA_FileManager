@@ -33,16 +33,19 @@ public class FileManage extends JFrame {
 	DataOutputStream dou;
 	
 	private JFrame rmdir_dialog = new JFrame();
-	JButton rmdirbtn;
-	JButton okBtn;
-	JButton cancelBtn;
+	private JButton rmdirbtn;
+	private JButton okBtn;
+	private JButton cancelBtn;
 	private JTextField filepath;
-	
+	public static clientConnect connect;
 	public FileManage() {
 		this.Manage();
 	}
 
 	public void Manage() {
+		connect = new clientConnect();
+		System.out.println("서버 연결");
+	
 		getContentPane().setFont(new Font("Apple Chancery", Font.BOLD, 17));
 		setTitle("파일 매니져");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,11 +81,10 @@ public class FileManage extends JFrame {
 
 		JButton accountbtn = new JButton(account);
 
-		LoginPG openlogin = new LoginPG();
-
 		accountbtn.addMouseListener(new MouseAdapter() {	
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				LoginPG openlogin = new LoginPG(connect);
 				openlogin.setVisible(true);
 			}
 		});
@@ -146,10 +148,10 @@ public class FileManage extends JFrame {
 				
 				try {
 					if(cmd.equals("upload")) {
-						System.out.println("connecting...");
-						//s = new Socket("127.0.0.1", 7777);
-						System.out.println("file uploading...");
-						dou = new DataOutputStream(s.getOutputStream());
+//						System.out.println("connecting...");
+//						//s = new Socket("127.0.0.1", 7777);
+//						System.out.println("file uploading...");
+//						dou = new DataOutputStream(s.getOutputStream());
 					}
 				} catch(Exception e1) {}
 		       
@@ -214,7 +216,6 @@ public class FileManage extends JFrame {
 		panel4.setBounds(211, 55, 477, 31);
 		backpanel.add(panel4);
 		rmdirbtn.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(null, "폴더를 삭제하시겠습니까?", "Confirm", JOptionPane.YES_NO_OPTION);
@@ -227,16 +228,13 @@ public class FileManage extends JFrame {
 				}
 			}
 		});
-		
-	
-		
-		
-		
 		setSize(700, 500);
 		setVisible(true);
 	}
 	
+	public void Login(){
 	
+	}
 
 	/**
 	 * Launch the application.
@@ -245,6 +243,7 @@ public class FileManage extends JFrame {
 		FileManage MP = new FileManage();
 	}
 
+	
 	
 }
 

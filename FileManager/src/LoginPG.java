@@ -1,36 +1,22 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Color;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.net.Socket;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
 
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
+class LoginPG extends JFrame {
 
-public class LoginPG extends JFrame {
-
-	Socket s;
 	private JPanel contentPane;
 	private JTextField IdtextField;
 	private JTextField PwtextField;
-
+	clientConnect connectt;
 	/**
 	 * Create the frame.
 	 */
-	public LoginPG() {
+	public LoginPG(clientConnect connect) {
+		this.connectt = connect;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -81,10 +67,12 @@ public class LoginPG extends JFrame {
 
 				try {
 					if(ch.equals("Log-in")) {
-						s = new Socket("127.0.0.1", 7777);
+						//connect = new clientConnect("127.0.0.1", 8888);
 						System.out.println("로그인 성공! ");
 					}
-				} catch(Exception e1) {}
+				} catch(Exception e1) {
+					e1.getStackTrace();
+				}
 			}
 		});
 
@@ -93,12 +81,12 @@ public class LoginPG extends JFrame {
 		signupbtn.setBounds(228, 192, 93, 29);
 		mainpanel.add(signupbtn);
 
-		SignupPG opensignup = new SignupPG();
 
 		signupbtn.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				SignupPG opensignup = new SignupPG(connectt);
 				opensignup.setVisible(true);
 			}
 		});
@@ -111,9 +99,5 @@ public class LoginPG extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		LoginPG loginPg = new LoginPG();
-
-	}
+	
 }
-
