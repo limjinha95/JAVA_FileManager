@@ -6,7 +6,7 @@ class clientConnect {
 
 	public clientConnect() {
 		try {
-			socket = new Socket("127.0.0.1", 8888);
+			socket = new Socket("127.0.0.1", 8080);
 			System.out.println("Success");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -15,11 +15,15 @@ class clientConnect {
 
 	public String getData() {
 		String data1 = null;
+
 		try {
 			InputStream inData = socket.getInputStream();
 			byte[] message1 = new byte[8192];
-			inData.read(message1);
-			data1 = new String(message1);
+			int len = inData.read(message1);
+			byte[] tmp = new byte[len];
+			System.arraycopy(message1, 0, tmp, 0, len);
+			data1 = new String(tmp);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

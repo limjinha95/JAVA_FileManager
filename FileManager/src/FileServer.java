@@ -11,13 +11,13 @@ public class FileServer {
 
 	public FileServer(int port) throws Exception {
 		s = new ServerSocket(port);
-
+		System.out.println("연결 준비중 ");
 		while (true) {
 			try {
 				socket = s.accept();
 				System.out.println("connection success");
-				FtpThread th = new FtpThread(socket);
-				th.start();
+				//FtpThread th = new FtpThread(socket);
+				//th.start();
 				db = new databaseConnect();
 				new Comm(socket, db).start();
 			} catch (IOException e) {
@@ -27,7 +27,7 @@ public class FileServer {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new FileServer(8888);
+		new FileServer(8080);
 	}
 }
 
@@ -49,10 +49,11 @@ class Comm extends Thread {
 				receiveMsg = receive();
 				if(receiveMsg.equals(null))
 					continue;
+				System.out.println(receiveMsg);
 				String[] buf = receiveMsg.split(",");
 				/* id check */
 				
-				System.out.println("buf[0] :" + buf[0]);
+				System.out.println("buf[0]:" + buf[0]);
 				
 				if (buf[0].equals("ID")) {
 					idCheck(buf[1]);
@@ -97,28 +98,27 @@ class Comm extends Thread {
 		String str;
 		str = db.idCheck(id);
 		if (str.equals("true")) // id 사용 가능
-			send("ok");
+			send("T");
 		else // id 사용 불가
-			send("no");
-
+			send("F");
 	}
 
 	public void repoCheck(String repo) {
 		String str;
 		str = db.repoCheck(repo);
 		if (str.equals("true")) // repository 사용 가능
-			send("ok");
+			send("T");
 		else // repository 중복
-			send("no");
+			send("F");
 	}
 
 	public void join_in(String id, String name, String pwd, String repository) {
 		String str;
 		str = db.join_in(id, name, pwd, repository);
 		if (str.equals("true")) // insert 성공
-			send("ok");
+			send("T");
 		else
-			send("no");
+			send("F");
 	}
 }
 
@@ -254,7 +254,7 @@ class databaseConnect {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement(sql);
-			ps.setString(4, repo);
+			ps.setString(1, repo);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				System.out.println("repository 존재");
@@ -270,7 +270,9 @@ class databaseConnect {
 		PreparedStatement ps = null;
 		String sql = "insert into user values(?,?,?,?)";
 		try {
+		
 			ps = con.prepareStatement(sql);
+			
 			ps.setString(1, id);
 			ps.setString(2, name);
 			ps.setString(3, pwd);
