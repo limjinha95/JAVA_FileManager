@@ -127,12 +127,18 @@ class SignupPG extends JFrame {
 				String getPwd2 = new String(pwd1.getPassword());
 				String getRepo = repoField.getText();
 
-				String msg = join_in(idChecknum, repoChecknum, getId, getName, getPwd, getPwd2, getRepo);
-				System.out.println(msg);
-				if (msg.equals("T"))
-					JOptionPane.showMessageDialog(null, "가입을 축하합니다.", "OK", JOptionPane.PLAIN_MESSAGE);
-				else
-					JOptionPane.showMessageDialog(null, "가입 실패.", "ERROR", JOptionPane.ERROR_MESSAGE);
+				if (!pwdCheck(getPwd, getPwd2)) { //패스워드 체크 
+					JOptionPane.showMessageDialog(null, "패스워드를 체크해 주세요", "ERROR", JOptionPane.ERROR_MESSAGE);
+				} else {
+					String msg = join_in(idChecknum, repoChecknum, getId, getName, getPwd, getRepo);
+					System.out.println(msg);
+					if (msg.equals("True"))
+						JOptionPane.showMessageDialog(null, "가입을 축하합니다.", "OK", JOptionPane.PLAIN_MESSAGE);
+					else if(msg.equals("False")){
+						JOptionPane.showMessageDialog(null, "가입 실패", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+					}
+				}
 			}
 		});
 		/* 사용 가능한 아이디 이면 idChecknum = 1 */
@@ -141,9 +147,15 @@ class SignupPG extends JFrame {
 		repositoryCheck();
 
 	}
-	public void pwdCheck(){
-		//pwd.ad
+
+	public boolean pwdCheck(String str, String str2) {
+		// pwd.ad
+		if (str.equals(str2)) {
+			return true;
+		}
+		return false;
 	}
+
 	public void repositoryCheck() {
 		repoCheck.addMouseListener(new MouseAdapter() {
 			String repo = "", msg = "";
@@ -154,16 +166,17 @@ class SignupPG extends JFrame {
 				connectt.sendData("Repo," + repo);
 				msg = connectt.getData();
 				System.out.println(msg);
-				char ch = msg.charAt(0);
-				if (ch == 'T') {
+				
+				if (msg.equals("True")) {
 					System.out.println("repsitory 사용 가능");
 					repoChecknum = 1;
 					JOptionPane.showMessageDialog(null, "Repository 를 사용하실수 있습니다", "OK", JOptionPane.PLAIN_MESSAGE);
-				} else if (ch == 'F') {
-					JOptionPane.showMessageDialog(null, "Repository 를 사용하실수 없습니다", "Warning", JOptionPane.ERROR_MESSAGE);
+				} else if (msg.equals("False")) {
+					JOptionPane.showMessageDialog(null, "Repository 를 사용하실수 없습니다", "Warning",
+							JOptionPane.ERROR_MESSAGE);
 					repoChecknum = 0;
 					System.out.println("repsitory 사용 불가");
-				}else{
+				} else {
 					System.out.println("검사 안함");
 				}
 			}
@@ -174,6 +187,7 @@ class SignupPG extends JFrame {
 		checkBtn.addMouseListener(new MouseAdapter() {
 			String id = "", msg = "";
 			int num;
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				id = idField.getText();
@@ -181,17 +195,17 @@ class SignupPG extends JFrame {
 				connectt.sendData("ID," + id);
 				msg = connectt.getData();
 				System.out.println(msg);
-				
-				if (msg.equals("T")) {
+
+				if (msg.equals("True")) {
 					System.out.println("id 사용 가능");
 					idChecknum = 1;
 					JOptionPane.showMessageDialog(null, "ID를 사용하실수 있습니다", "OK", JOptionPane.PLAIN_MESSAGE);
-				} else if (msg.equals("F")) {
+				} else if (msg.equals("False")) {
 					JOptionPane.showMessageDialog(null, "ID를 사용하실수 없습니다", "Warning", JOptionPane.ERROR_MESSAGE);
 					idChecknum = 0;
 					System.out.println("id 사용 불가");
-				
-				} else{
+
+				} else {
 					System.out.println("검사 안함");
 				}
 			}
@@ -201,15 +215,13 @@ class SignupPG extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public String join_in(int idNum, int repoNum, String id, String name, String pwd, String pwd1, String repository) {
+	public String join_in(int idNum, int repoNum, String id, String name, String pwd, String repository) {
 		String msg = null;
-		if (idNum == 1 && repoNum == 1 && pwd.equals(pwd1)) {
+		if (idNum == 1 && repoNum == 1) {
 			String join = "Join," + id + ',' + name + ',' + pwd + ',' + repository;
 			System.out.println("join :" + join);
 			connectt.sendData(join);
 			msg = connectt.getData();
-		} else if (!pwd.equals(pwd1)) {
-			JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주세요", "Warning", JOptionPane.ERROR_MESSAGE);
 		}
 		return msg;
 	}

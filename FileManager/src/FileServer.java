@@ -75,8 +75,10 @@ class Comm extends Thread {
 		try {
 			InputStream inData = socket.getInputStream();
 			byte[] message1 = new byte[8192];
-			inData.read(message1);
-			data1 = new String(message1);
+			int len = inData.read(message1);
+			byte[] buf = new byte[len];
+			System.arraycopy(message1, 0, buf, 0, len);
+			data1 = new String(buf);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -98,27 +100,27 @@ class Comm extends Thread {
 		String str;
 		str = db.idCheck(id);
 		if (str.equals("true")) // id 사용 가능
-			send("T");
+			send("True");
 		else // id 사용 불가
-			send("F");
+			send("False");
 	}
 
 	public void repoCheck(String repo) {
 		String str;
 		str = db.repoCheck(repo);
 		if (str.equals("true")) // repository 사용 가능
-			send("T");
+			send("True");
 		else // repository 중복
-			send("F");
+			send("False");
 	}
 
 	public void join_in(String id, String name, String pwd, String repository) {
 		String str;
 		str = db.join_in(id, name, pwd, repository);
 		if (str.equals("true")) // insert 성공
-			send("T");
+			send("True");
 		else
-			send("F");
+			send("False");
 	}
 }
 
@@ -268,7 +270,7 @@ class databaseConnect {
 
 	public String join_in(String id, String name, String pwd, String repository) {
 		PreparedStatement ps = null;
-		String sql = "insert into user values(?,?,?,?)";
+		String sql = "insert into user(id,name,pwd,repository) values(?,?,?,?)";
 		try {
 		
 			ps = con.prepareStatement(sql);
@@ -288,3 +290,9 @@ class databaseConnect {
 		return "false";
 	}
 }
+
+
+
+
+
+
